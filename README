@@ -1,0 +1,4 @@
+Utility packages for go.
+
+--- SUBPACKAGES ---
+slices/		Sorts slices using a user given comparator. Also allows for turning slices into heaps.
