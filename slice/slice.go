@@ -117,7 +117,7 @@ func WrapTyped(slice, comparator interface{}) heap.Interface {
 //	sort.Sort(ascending) // slice will be sorted in ascending order
 //	sort.Sort(decending) // slice will be sorted in decending order
 func WrapUntyped(slice interface{}, comparator func(a, b interface{}) bool) heap.Interface {
-	return &untyped{wrapSlice(slice), f}
+	return &untyped{wrapSlice(slice), comparator}
 }
 
 // WrapInterface wraps a slice that satisfies the Interface interface
@@ -142,8 +142,39 @@ func WrapInterface(slice Interface) heap.Interface {
 	return &wrapped{slice, wrapSlice(slice)}
 }
 
-// Sort passes its arguments unaltered to slice.Wrap, and then calls sort.Sort
-// on the result.
-func Sort(slice interface{}, comparator ...interface{}) {
-	sort.Sort(Wrap(slice, comparator...))
+// Wrap is a utility method that calls one of the more specific Wrap*
+// functions. This utility is less type-safe than the other functions,
+// so expect panics.
+func Wrap(slice interface{}, args ...interface{}) heap.Interface {
+	if x, ok := slice.(Interface); ok {
+		return WrapInterface(x)
+	}
+	if f, ok := args[0].(func(a, b interface{}) bool); ok {
+		return WrapUntyped(slice, f)
+	}
+	return WrapTyped(slice, args[0])
+}
+
+// SortTyped passes its arguments unaltered to slice.WrapTyped, and then
+// calls sort.Sort on the result.
+func SortTyped(slice interface{}, comparator interface{}) {
+	sort.Sort(WrapTyped(slice, comparator))
+}
+
+// SortUntyped passes its arguments unaltered to slice.WrapUntyped, and then
+// calls sort.Sort on the result.
+func SortUntyped(slice interface{}, comparator func(a, b interface{}) bool) {
+	sort.Sort(WrapUntyped(slice, comparator))
+}
+
+// SortInterface passes its arguments unaltered to slice.WrapInterface, and then
+// calls sort.Sort on the result.
+func SortInterface(slice Interface) {
+	sort.Sort(WrapInterface(slice))
+}
+
+// Sort passes its arguments unaltered to slice.Wrap, and then
+// calls sort.Sort on the result.
+func Sort(slice interface{}, args ...interface{}) {
+	sort.Sort(Wrap(slice, args...))
 }
