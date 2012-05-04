@@ -17,12 +17,12 @@ var insertTests = []struct {
 	{[]int{1, 2, 3}, 1, 50, []int{1, 50, 2, 3}},
 	{[]int{1, 2, 3}, 3, 99, []int{1, 2, 3, 99}},
 	{[]int{1, 2, 3}, 2, "q", nil},
-	{5,2,1,nil},
+	{5, 2, 1, nil},
 }
 
 type insertFunc func(interface{}, int, interface{}) interface{}
 
-func runInsertTest(t *T, slice interface{}, idx int, item interface{}, result interface{}, f insertFunc, name string) {
+func runInsertTest(t *T, slice interface{}, index int, item interface{}, result interface{}, f insertFunc, name string) {
 	defer func() {
 		need_panic := result == nil
 		if need_panic {
@@ -38,8 +38,8 @@ func runInsertTest(t *T, slice interface{}, idx int, item interface{}, result in
 		}
 	}()
 
-	t.Logf("Running test %s(%#v, %d, %#v) = %#v", name, slice, idx, item, result)
-	r := f(slice, idx, item)
+	t.Logf("Running test %s(%#v, %d, %#v) = %#v", name, slice, index, item, result)
+	r := f(slice, index, item)
 
 	if !reflect.DeepEqual(r, result) {
 		t.Errorf("\tUnexpected result: %v", r)
