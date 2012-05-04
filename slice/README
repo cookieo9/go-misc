@@ -1,4 +1,11 @@
-Utitlity package to simplify sorting slices in go. See godoc documentation for specifics.
+Utility package using reflect to add generic functions for dealing with slices of any kind.
+
+Provides the following generic features:
+	- Sorting via the sort package, using a user defined comparator.
+	- Wrapping a slice into a sortable type and/or a heap using a comparator.
+	- Advanced container operations on any slice:
+		- insert(slice, index, item)
+		- delete(slice, index)
 
 --- INSTALL ---
 	$ go get github.com/cookieo9/go-misc/slice

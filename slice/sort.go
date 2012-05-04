@@ -1,5 +1,5 @@
 /*
-Package slice provides simplified sorting for generic slices, as well as building heaps from those slices.
+Package slice provides generic functions for slices using reflection.
 
 */
 package slice
