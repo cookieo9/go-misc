@@ -5,8 +5,8 @@ Utility packages for go.
 
 SUBPACKAGES
 -------------------
-slices/		Generic functions and features for slices.
-pp/		text/tabwriter Pretty Printer for go objects.
+    slices/    Generic functions and features for slices.
+    pp/        Pretty Printer for go objects using text/tabwriter.
 
 LICENSE
 -------
