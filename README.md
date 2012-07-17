@@ -1,12 +1,15 @@
 go-misc
 =======
 
-Utility packages for go.
+Utility packages for go. Go 1 Compatible. Go Gettable.
+
+    go get github.com/cookieo9/go-misc/pp
+    go get github.com/cookieo9/go-misc/slices
 
 SUBPACKAGES
 -------------------
-    slices/    Generic functions and features for slices.
     pp/        Pretty Printer for go objects using text/tabwriter.
+    slices/    Generic functions and features for slices.
 
 LICENSE
 -------
