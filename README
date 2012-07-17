@@ -1,4 +1,0 @@
-Utility packages for go.
-
---- SUBPACKAGES ---
-slices/		Generic functions and features for slices.
