@@ -3,6 +3,7 @@ Utility package using reflect to add generic functions for dealing with slices o
 Provides the following generic features:
 	- Sorting via the sort package, using a user defined comparator.
 	- Wrapping a slice into a sortable type and/or a heap using a comparator.
+	- Reversing the order of items in a slice
 	- Advanced container operations on any slice:
 		- insert(slice, index, item)
 		- delete(slice, index)
