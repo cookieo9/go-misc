@@ -1,2 +1,3 @@
 language: go
-script: go test -v ./...
+
+script: go test ./slice ./pp
