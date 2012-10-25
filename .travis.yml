@@ -1,2 +1,5 @@
 language: go
+
+install:
+
 script: go test -v ./...
