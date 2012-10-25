@@ -1,3 +1,5 @@
 language: go
 
-script: go test ./slice ./pp
+install:
+
+script: go test -v ./...
