@@ -1,12 +1,15 @@
 Utility package using reflect to add generic functions for dealing with slices of any kind.
+Uses reflection heavily to do it's work.
 
-Provides the following generic features:
+Provides the following features generically to all slice types:
 	- Sorting via the sort package, using a user defined comparator.
 	- Wrapping a slice into a sortable type and/or a heap using a comparator.
 	- Reversing the order of items in a slice
 	- Advanced container operations on any slice:
 		- insert(slice, index, item)
 		- delete(slice, index)
+	- Shrinking the capacity of a slice
+	- Making a sub-slice where len = cap
 
 --- INSTALL ---
 	$ go get github.com/cookieo9/go-misc/slice
