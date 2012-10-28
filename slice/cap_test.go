@@ -5,7 +5,24 @@ import (
 	. "testing"
 )
 
+func ExampleHardSlice() {
+	base := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+
+	a := base[0:5]    // len(a)=5 cap(a)=15
+	a = append(a, -6) // modifies base
+
+	a2 := HardSlice(a, 0, 5).([]int) // len(a2)=5 cap(a2)=5
+	a2 = append(a2, -7)              // does not modify base
+}
+
+func ExampleShrinkCapacity() {
+	base := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+	a := base[0:5]         // len(a)=5 cap(a)=15
+	ShrinkCapacity(&a, 10) // len(a)=5 cap(a)=10
+}
+
 func TestShrinkCapacity(t *T) {
+	t.Parallel()
 	dumpSlice := func(name string, slice []int) {
 		t.Logf("%s: addr(%p) len(%d) cap(%d) - %v", name, &slice[0], len(slice), cap(slice), slice)
 	}
@@ -32,10 +49,10 @@ func TestShrinkCapacity(t *T) {
 	dumpAll()
 
 	if cap(a) != 5 {
-		t.Error("cap(a) should be %d, but got %d instead", 5, cap(a))
+		t.Errorf("cap(a) should be %d, but got %d instead", 5, cap(a))
 	}
 	if cap(b) != 5 {
-		t.Error("cap(b) should be %d, but got %d instead", 5, cap(b))
+		t.Errorf("cap(b) should be %d, but got %d instead", 5, cap(b))
 	}
 
 	t.Log("--- Appending ---")
@@ -44,11 +61,12 @@ func TestShrinkCapacity(t *T) {
 	dumpAll()
 
 	if !reflect.DeepEqual(base, original) {
-		t.Error("base slice modified!")
+		t.Error("Base slice modified!")
 	}
 }
 
 func TestHardSlice(t *T) {
+	t.Parallel()
 	dumpSlice := func(name string, slice []int) {
 		t.Logf("%s: addr(%p) len(%d) cap(%d) - %v", name, &slice[0], len(slice), cap(slice), slice)
 	}
@@ -62,10 +80,10 @@ func TestHardSlice(t *T) {
 	dumpSlice("b", b)
 
 	if cap(a) != 5 {
-		t.Error("cap(a) should be %d, but got %d instead", 5, cap(a))
+		t.Errorf("cap(a) should be %d, but got %d instead", 5, cap(a))
 	}
 	if cap(b) != 5 {
-		t.Error("cap(b) should be %d, but got %d instead", 5, cap(b))
+		t.Errorf("cap(b) should be %d, but got %d instead", 5, cap(b))
 	}
 	if &base[0] != &a[0] {
 		t.Error("HardSlice created a new array backing a when it shouldn't have")
@@ -75,12 +93,58 @@ func TestHardSlice(t *T) {
 	}
 }
 
-func ExampleHardSlice() {
-	base := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+var ShrinkCapacity_GoodTestCases = []struct {
+	Slice    []int
+	Cap      int
+	Expected []int
+}{
+	{[]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 5, []int{1, 2, 3, 4, 5}},
+	{[]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 10, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}},
+	{[]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 0, []int{}},
+	{[]int{}, 0, []int{}},
+}
 
-	a := base[0:5]    // len(a)=5 cap(a)=15
-	a = append(a, -6) // modifies base
+func TestShrinkCapacity_Good(t *T) {
+	t.Parallel()
+	for _, test := range ShrinkCapacity_GoodTestCases {
+		t.Logf("ShrinkCapacity(%v,%d) = %v", test.Slice, test.Cap, test.Expected)
 
-	a2 := HardSlice(a, 0, 5).([]int) // len(a2)=5 cap(a2)=5
-	a2 = append(a2, -7)              // does not modify base
+		a := test.Slice
+		ShrinkCapacity(&a, test.Cap)
+		if cap(a) != test.Cap {
+			t.Errorf("Expected capacity of %d, got %d", test.Cap, cap(a))
+		}
+		if !reflect.DeepEqual(a, test.Expected) {
+			t.Errorf("Expected %v, got %v", test.Expected, a)
+		}
+	}
+}
+
+var ShrinkCapacity_PanicTestCases = []struct {
+	Input interface{}
+	Cap   int
+	Panic interface{}
+}{
+	{&[]int{1, 2, 3}, 5, _ShrinkCapacityIncrease},
+	{[]int{1, 2, 3}, 2, _ShrinkCapacityNotPointer},
+	{&[]int{}, 0, nil},
+}
+
+func TestShrinkCapacity_Panic(t *T) {
+	t.Parallel()
+	for _, test := range ShrinkCapacity_PanicTestCases {
+		t.Logf("ShrinkCapacity(%v,%d) => panic(%v)", test.Input, test.Cap, test.Panic)
+
+		var pval interface{}
+		func() {
+			defer func() {
+				pval = recover()
+			}()
+			ShrinkCapacity(test.Input, test.Cap)
+		}()
+
+		if !reflect.DeepEqual(pval, test.Panic) {
+			t.Errorf("Expected panic(%v), got panic(%v)", test.Panic, pval)
+		}
+	}
 }
