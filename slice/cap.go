@@ -5,6 +5,11 @@ import (
 	"unsafe"
 )
 
+var (
+	_ShrinkCapacityNotPointer = "ShrinkCapacity: not passed a pointer to a slice"
+	_ShrinkCapacityIncrease   = "ShrinkCapacity: attempt to increase capacity"
+)
+
 // ShrinkCapacity reduces the capacity of the given slice in place.
 // If the new capacity is smaller then the exising length, the
 // length is also reduced to the new capacity.
@@ -15,7 +20,7 @@ func ShrinkCapacity(slicePointer interface{}, capacity int) {
 	pointerValue := reflect.ValueOf(slicePointer)
 
 	if pointerValue.Kind() != reflect.Ptr || pointerValue.Elem().Kind() != reflect.Slice {
-		panic("ShrinkCapacity: not passed a pointer to a slice")
+		panic(_ShrinkCapacityNotPointer)
 	}
 
 	sh := (*reflect.SliceHeader)(unsafe.Pointer(pointerValue.Pointer()))
@@ -23,7 +28,7 @@ func ShrinkCapacity(slicePointer interface{}, capacity int) {
 
 	// Prevent increasing capacity
 	if c < capacity {
-		panic("ShrinkCapacity: attempt to increase capacity")
+		panic(_ShrinkCapacityIncrease)
 	}
 
 	// Enforce output len <= cap
