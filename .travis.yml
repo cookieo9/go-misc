@@ -1,3 +1,8 @@
 language: go
 
 script: go test -v ./...
+
+branches:
+        only:
+                - go1
+                - master
