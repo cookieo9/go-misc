@@ -23,6 +23,7 @@ func (si sortInterface) Less(i, j int) bool {
 }
 
 func TestSortInterface(t *testing.T) {
+	t.Parallel()
 	a := testSlice()
 	b := []int{5, 4, 3, 2, 1}
 	c := sortInterface(a)
@@ -34,6 +35,7 @@ func TestSortInterface(t *testing.T) {
 }
 
 func TestSortTyped(t *testing.T) {
+	t.Parallel()
 	a := testSlice()
 	b := []int{5, 4, 3, 2, 1}
 	f := func(a, b int) bool { return a > b }
@@ -45,6 +47,7 @@ func TestSortTyped(t *testing.T) {
 }
 
 func TestSortUntyped(t *testing.T) {
+	t.Parallel()
 	a := testSlice()
 	b := []int{5, 4, 3, 2, 1}
 	f := func(a, b interface{}) bool { return a.(int) > b.(int) }
@@ -115,6 +118,7 @@ func (hi heapInterface) Less(i, j int) bool {
 }
 
 func TestHeap(t *testing.T) {
+	t.Parallel()
 	a := heapInterface(genIntArray(HeapCount))
 	h := Wrap(&a)
 
