@@ -40,10 +40,10 @@ func TestShrinkCapacity(t *T) {
 		dumpSlice("b", b)
 	}
 
-	t.Log("--- Initial State")
+	t.Log("### Initial State ###")
 	dumpAll()
 
-	t.Log("--- Using ShrinkCapacity")
+	t.Log("### Using ShrinkCapacity ###")
 	ShrinkCapacity(&a, 5)
 	ShrinkCapacity(&b, 5)
 	dumpAll()
@@ -55,7 +55,7 @@ func TestShrinkCapacity(t *T) {
 		t.Errorf("cap(b) should be %d, but got %d instead", 5, cap(b))
 	}
 
-	t.Log("--- Appending")
+	t.Log("### Appending ###")
 	a = append(a, -999)
 	b = append(b, -999)
 	dumpAll()
