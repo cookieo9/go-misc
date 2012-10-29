@@ -45,9 +45,12 @@ func ShrinkCapacity(slicePointer interface{}, capacity int) {
 // Appending to the new slice should always result in a memory copy.
 func HardSlice(source interface{}, begin, end int) interface{} {
 	sourceValue := reflect.ValueOf(source)
+
 	slice := sourceValue.Slice(begin, end)
-	output := reflect.New(slice.Type()).Elem()
+	outputPtr := reflect.New(slice.Type())
+	output := outputPtr.Elem()
 	output.Set(slice)
-	ShrinkCapacity(output.Addr().Interface(), output.Len())
+
+	ShrinkCapacity(outputPtr.Interface(), output.Len())
 	return output.Interface()
 }
