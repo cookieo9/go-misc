@@ -3,6 +3,7 @@ package slice
 import (
 	"reflect"
 	. "testing"
+	"unsafe"
 )
 
 func ExampleHardSlice() {
@@ -146,5 +147,54 @@ func TestShrinkCapacity_Panic(t *T) {
 		if !reflect.DeepEqual(pval, test.Panic) {
 			t.Errorf("Expected panic(%v), got panic(%v)", test.Panic, pval)
 		}
+	}
+}
+
+func BenchmarkShrinkCapacity(b *B) {
+	base := make([]int, 10)
+	for i := 0; i < b.N; i++ {
+		a := base[:5]
+		ShrinkCapacity(&a, len(a))
+	}
+}
+
+func shrink_cap_int(slice *[]int, capacity int) {
+	sh := (*reflect.SliceHeader)(unsafe.Pointer(slice))
+	if capacity > sh.Cap {
+		panic(_ShrinkCapacityIncrease)
+	}
+
+	sh.Cap = capacity
+	if sh.Len > sh.Cap {
+		sh.Len = sh.Cap
+	}
+}
+
+func BenchmarkShrinkCapacity_Fixed(b *B) {
+	base := make([]int, 10)
+	for i := 0; i < b.N; i++ {
+		a := base[:5]
+		shrink_cap_int(&a, len(a))
+	}
+}
+
+func BenchmarkHardSlice(b *B) {
+	base := make([]int, 10)
+	for i := 0; i < b.N; i++ {
+		_ = HardSlice(base, 0, 5).([]int)
+	}
+}
+
+func hard_slice_int(slice []int, begin, end int) (subslice []int) {
+	subslice = slice[begin:end]
+	sh := (*reflect.SliceHeader)(unsafe.Pointer(&subslice))
+	sh.Cap = sh.Len
+	return
+}
+
+func BenchmarkHardSlice_Fixed(b *B) {
+	base := make([]int, 10)
+	for i := 0; i < b.N; i++ {
+		_ = hard_slice_int(base, 0, 5)
 	}
 }
