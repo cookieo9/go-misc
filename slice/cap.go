@@ -19,25 +19,23 @@ var (
 func ShrinkCapacity(slicePointer interface{}, capacity int) {
 	pointerValue := reflect.ValueOf(slicePointer)
 
-	if pointerValue.Kind() != reflect.Ptr || pointerValue.Elem().Kind() != reflect.Slice {
+	t := pointerValue.Type()
+	if t.Kind() != reflect.Ptr || t.Elem().Kind() != reflect.Slice {
 		panic(_ShrinkCapacityNotPointer)
 	}
 
 	sh := (*reflect.SliceHeader)(unsafe.Pointer(pointerValue.Pointer()))
-	l, c := sh.Len, sh.Cap
 
 	// Prevent increasing capacity
-	if c < capacity {
+	if sh.Cap < capacity {
 		panic(_ShrinkCapacityIncrease)
 	}
 
 	// Enforce output len <= cap
-	c = capacity
-	if l > c {
-		l = c
+	sh.Cap = capacity
+	if sh.Len > sh.Cap {
+		sh.Len = sh.Cap
 	}
-
-	sh.Len, sh.Cap = l, c
 }
 
 // HardSlice performs a slicing operation on the given array or slice
