@@ -23,7 +23,6 @@ func ExampleShrinkCapacity() {
 }
 
 func TestShrinkCapacity(t *T) {
-	t.Parallel()
 	dumpSlice := func(name string, slice []int) {
 		t.Logf("%s: addr(%p) len(%d) cap(%d) - %v", name, &slice[0], len(slice), cap(slice), slice)
 	}
@@ -67,7 +66,6 @@ func TestShrinkCapacity(t *T) {
 }
 
 func TestHardSlice(t *T) {
-	t.Parallel()
 	dumpSlice := func(name string, slice []int) {
 		t.Logf("%s: addr(%p) len(%d) cap(%d) - %v", name, &slice[0], len(slice), cap(slice), slice)
 	}
@@ -106,7 +104,6 @@ var ShrinkCapacity_GoodTestCases = []struct {
 }
 
 func TestShrinkCapacity_Good(t *T) {
-	t.Parallel()
 	for _, test := range ShrinkCapacity_GoodTestCases {
 		t.Logf("ShrinkCapacity(%v,%d) = %v", test.Slice, test.Cap, test.Expected)
 
@@ -127,12 +124,12 @@ var ShrinkCapacity_PanicTestCases = []struct {
 	Panic interface{}
 }{
 	{&[]int{1, 2, 3}, 5, _ShrinkCapacityIncrease},
-	{[]int{1, 2, 3}, 2, _ShrinkCapacityNotPointer},
+	{&[]int{1, 2, 3}, -5, _ShrinkCapacityNegative},
+	{[]int{1, 2, 3}, 2, _ShrinkCapacityInvalidType},
 	{&[]int{}, 0, nil},
 }
 
 func TestShrinkCapacity_Panic(t *T) {
-	t.Parallel()
 	for _, test := range ShrinkCapacity_PanicTestCases {
 		t.Logf("ShrinkCapacity(%v,%d) => panic(%v)", test.Input, test.Cap, test.Panic)
 
@@ -146,6 +143,69 @@ func TestShrinkCapacity_Panic(t *T) {
 
 		if !reflect.DeepEqual(pval, test.Panic) {
 			t.Errorf("Expected panic(%v), got panic(%v)", test.Panic, pval)
+		}
+	}
+}
+
+var HardSlice_GoodTestCases = []struct {
+	Input      []int
+	Begin, End int
+	Expected   []int
+}{
+	{[]int{1, 2, 3, 4, 5}, 0, 5, []int{1, 2, 3, 4, 5}},
+	{[]int{1, 2, 3, 4, 5}, 2, 4, []int{3, 4}},
+	{[]int{1, 2, 3, 4, 5}, 4, 4, []int{}},
+	{[]int{1, 2, 3, 4, 5}, 0, 0, []int{}},
+	{[]int{}, 0, 0, []int{}},
+}
+
+func TestHardSlice_Good(t *T) {
+	for _, test := range HardSlice_GoodTestCases {
+		t.Logf("HardSlice(%v,%d,%d) = %v", test.Input, test.Begin, test.End, test.Expected)
+
+		expected_len_cap := test.End - test.Begin
+		output := HardSlice(test.Input, test.Begin, test.End).([]int)
+
+		if cap(output) != expected_len_cap {
+			t.Errorf("Expected capacity of %d, got %d", expected_len_cap, cap(output))
+		}
+		if len(output) != expected_len_cap {
+			t.Errorf("Expected length of %d, got %d", expected_len_cap, len(output))
+		}
+
+		if !reflect.DeepEqual(output, test.Expected) {
+			t.Errorf("Expected %v, got %v", test.Expected, output)
+		}
+	}
+}
+
+var HardSlice_PanicTestCases = []struct {
+	Input      interface{}
+	Begin, End int
+	Panic      interface{}
+}{
+	{5, 0, 0, _HardSliceInvalidType},
+	{&[]int{1, 2, 3, 4, 5}, 0, 0, _HardSliceInvalidType},
+	{[]int{1, 2, 3, 4, 5}, 0, 0, nil},
+	{[]int{1, 2, 3, 4, 5}, -1, 0, _HardSliceIndexOutOfBounds},
+	{[]int{1, 2, 3, 4, 5}, 0, 6, _HardSliceIndexOutOfBounds},
+	{[]int{1, 2, 3, 4, 5}, 3, 2, _HardSliceIndexOutOfBounds},
+}
+
+func TestHardSlice_Panic(t *T) {
+	for _, test := range HardSlice_PanicTestCases {
+		t.Logf("HardSlice(%v,%d,%d) => panic(%v)", test.Input, test.Begin, test.End, test.Panic)
+		var panicVal interface{}
+
+		func() {
+			defer func() {
+				panicVal = recover()
+			}()
+			HardSlice(test.Input, test.Begin, test.End)
+		}()
+
+		if !reflect.DeepEqual(panicVal, test.Panic) {
+			t.Errorf("Expected panic(%v), got panic(%v)", test.Panic, panicVal)
 		}
 	}
 }
