@@ -6,7 +6,24 @@ import (
 	"math/big"
 )
 
+func ExamplePreallocateInt() {
+	// Useless: adds extra code, and doesn't even result
+	// in fewer allocations.
+	var x,y,z big.Int
+
+	big128.PreallocateInt(&x)
+	big128.PreallocateInt(&y)
+	big128.PreallocateInt(&z)
+
+	x.SetInt64(52)
+	y.SetInt64(10)
+	z.Sub(x,y)
+
+	fmt.Println(z.String())
+	// Output: 42
+}
 func ExampleNewInt() {
+	// Use as drop-in replacement for math/big.NewInt()
 	x := big128.NewInt(52)
 	y := big128.NewInt(10)
 	z := big128.NewInt(0)

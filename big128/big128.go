@@ -1,3 +1,9 @@
+// The big128 package provides a small set of preallocation tools for the go standard library
+// math/big package. These tools allow the user to generate *big.Int, []big.Int, and []*big.Int values
+// with 128-bits of preallocated storage using a small number of memory allocations.
+//
+// As long as the values don't exceed the pre-allocated capacity, no further dynamic
+// allocations by the big.Int and big.nat code will be necessary.
 package big128
 
 import (
@@ -19,6 +25,19 @@ const (
 
 	pS = bits / _W // preallocated array size in Words
 )
+
+// PreallocInt() preallocates 128-bits of storage for an existing
+// big.Int value. Will not perform the pre-allocation if the given
+// pointer is nil, or if the storage has already been allocated.
+//
+// This function serves very little purpose as it provides no benefits
+// whatsoever, and is only included for completeness.
+func PreallocInt(i *big.Int) {
+	var mem [pS]big.Word
+	if i != nil && cap(i.Bits()) == 0 {
+		i.SetBits(mem[0:0])
+	}
+}
 
 // NewInt() returns a new *big.Int, with preallocated
 // storage for 128 bits worth of data and set initially
