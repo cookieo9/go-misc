@@ -6,18 +6,18 @@ import (
 	"math/big"
 )
 
-func ExamplePreallocateInt() {
+func ExamplePreallocInt() {
 	// Useless: adds extra code, and doesn't even result
 	// in fewer allocations.
 	var x, y, z big.Int
 
-	big128.PreallocateInt(&x)
-	big128.PreallocateInt(&y)
-	big128.PreallocateInt(&z)
+	big128.PreallocInt(&x)
+	big128.PreallocInt(&y)
+	big128.PreallocInt(&z)
 
 	x.SetInt64(52)
 	y.SetInt64(10)
-	z.Sub(x, y)
+	z.Sub(&x, &y)
 
 	fmt.Println(z.String())
 	// Output: 42
