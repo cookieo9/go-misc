@@ -87,7 +87,7 @@ type wrapped struct {
 //	slice := []int8{3,4,1,5,2}
 //	ascending := WrapTyped(slice,func(a,b int8)bool {return a<=b})
 //	decending := WrapTyped(slice,func(a,b int8)bool {return a>=b})
-//	
+//
 //	sort.Sort(ascending) // slice will be sorted in ascending order
 //	sort.Sort(decending) // slice will be sorted in decending order
 //

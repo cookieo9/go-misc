@@ -132,7 +132,7 @@ func Delete(slice interface{}, index int) interface{} {
 // Will panic if:
 //	- slice argument is not a slice type
 //	- idx is not in the range 0 .. len(slice)-1
-// 
+//
 // Equivalent to:
 //	slice = append(append(make([]T,0,len(slice)-1),slice[:idx]...),slice[idx+1]...)
 func DeleteCopy(slice interface{}, index int) interface{} {
