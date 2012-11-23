@@ -10,6 +10,7 @@ Utility packages for go. Go 1 Compatible. Go Gettable.
 
 Subpackages
 -------------------
+    big128    Tools to preallocate 128-bit math/big.Ints
     pp        Pretty Printer for go objects using text/tabwriter.
     slice     Generic functions and features for slices.
 
