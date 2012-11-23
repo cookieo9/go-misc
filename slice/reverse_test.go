@@ -27,15 +27,21 @@ func TestReverse(t *T) {
 	}
 }
 
+const RevArraySize = 1e4
+
 func BenchmarkReverse(b *B) {
-	a := make([]int, b.N)
-	Reverse(a)
+	a := make([]int, RevArraySize)
+	for i := 0; i < b.N; i++ {
+		Reverse(a)
+	}
 }
 
 func BenchmarkReverseRaw(b *B) {
-	a := make([]int, b.N)
-	for i := 0; i < len(a)/2; i++ {
-		i2 := len(a) - 1 - i
-		a[i], a[i2] = a[i2], a[i]
+	a := make([]int, RevArraySize)
+	for n := 0; n < b.N; n++ {
+		for i := 0; i < len(a)/2; i++ {
+			i2 := len(a) - 1 - i
+			a[i], a[i2] = a[i2], a[i]
+		}
 	}
 }
