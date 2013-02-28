@@ -1,6 +1,5 @@
 /*
 Package slice provides generic functions for slices using reflection.
-
 */
 package slice
 
