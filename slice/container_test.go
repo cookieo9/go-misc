@@ -82,3 +82,39 @@ func BenchmarkInsertBuiltin(b *B) {
 		brr[1] = 2
 	}
 }
+
+type deleteTest struct {
+	InitialSlice   interface{}
+	Element        int
+	ExpectedResult interface{}
+}
+
+var deleteTests = func() []deleteTest {
+	return []deleteTest{{[]int{1, 4, 2, 3, 4, 5}, 1, []int{1, 2, 3, 4, 5}}}
+}
+
+func TestDeleteCopy(t *T) {
+	for n, test := range deleteTests() {
+		initial, expected, index := test.InitialSlice, test.ExpectedResult, test.Element
+
+		t.Logf("%d: slice.DeleteCopy(%v, %d) => %v", n, initial, index, expected)
+		result := DeleteCopy(initial, index)
+
+		if !reflect.DeepEqual(result, expected) {
+			t.Errorf("%d: Expected %v got %v", n, expected, result)
+		}
+	}
+}
+
+func TestDelete(t *T) {
+	for n, test := range deleteTests() {
+		initial, expected, index := test.InitialSlice, test.ExpectedResult, test.Element
+
+		t.Logf("%d: slice.Delete(%v,%d) => %v", n, initial, index, expected)
+		result := Delete(initial, index)
+
+		if !reflect.DeepEqual(result, expected) {
+			t.Errorf("%d: Expected %v got %v", n, expected, result)
+		}
+	}
+}
