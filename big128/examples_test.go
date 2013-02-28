@@ -1,8 +1,8 @@
 package big128_test
 
 import (
+	big128 "."
 	"fmt"
-	"github.com/cookieo9/go-misc/big128"
 	"math/big"
 )
 
