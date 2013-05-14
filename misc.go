@@ -1,2 +1,3 @@
-// This file exists so that a build/install/test in this directory doesn't fail
+// So useful packages I have built for myself and others to look at and possibly
+// use.
 package misc
