@@ -7,7 +7,7 @@ Utility packages for go. Go 1 Compatible. Go Gettable.
     go get github.com/cookieo9/go-misc/slice
     etc...
 
-[![Build Status](https://secure.travis-ci.org/cookieo9/go-misc.png)](http://travis-ci.org/cookieo9/go-misc)
+[![Build Status](https://travis-ci.org/cookieo9/go-misc.png?branch=master)](https://travis-ci.org/cookieo9/go-misc)
 
 Subpackages
 -------------------
