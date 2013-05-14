@@ -4,9 +4,9 @@ package pp
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"reflect"
 	"text/tabwriter"
-	"io"
 )
 
 func PP(x interface{}) string {
