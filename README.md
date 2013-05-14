@@ -9,8 +9,12 @@ Utility packages for go. Go 1 Compatible. Go Gettable.
 
 [![Build Status](https://travis-ci.org/cookieo9/go-misc.png?branch=master)](https://travis-ci.org/cookieo9/go-misc)
 
+Documentation
+-------------
+Documentation for all packages are available at http://www.godoc.org/github.com/cookieo9/go-misc
+
 Subpackages
--------------------
+-----------
     big128    Tools to preallocate 128-bit math/big.Ints
     dbg       Easy debugging message utility.
     flagutil  Utility types for stdlib flag package.
