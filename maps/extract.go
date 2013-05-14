@@ -1,3 +1,4 @@
+// Utility functions to extract keys, values, or both from maps.
 package maps
 
 import "reflect"
