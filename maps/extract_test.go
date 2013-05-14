@@ -1,7 +1,8 @@
 package maps
 
 import (
-	"github.com/cookieo9/go-misc/slice"
+	// "github.com/cookieo9/go-misc/slice"
+	"../slice"
 	"reflect"
 	"testing"
 )

@@ -1,5 +1,4 @@
 language: go
 
 script: 
-        - go get -x github.com/cookieo9/go-misc/slice
         - go test ./...
