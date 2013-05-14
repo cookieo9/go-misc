@@ -11,7 +11,7 @@ Utility packages for go. Go 1 Compatible. Go Gettable.
 
 Documentation
 -------------
-Documentation for all packages are available at http://www.godoc.org/github.com/cookieo9/go-misc
+Documentation for all subpackages is available at http://www.godoc.org/github.com/cookieo9/go-misc
 
 Subpackages
 -----------
