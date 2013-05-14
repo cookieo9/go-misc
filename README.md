@@ -12,10 +12,11 @@ Utility packages for go. Go 1 Compatible. Go Gettable.
 Subpackages
 -------------------
     big128    Tools to preallocate 128-bit math/big.Ints
+    dbg       Easy debugging message utility.
+    flagutil  Utility types for stdlib flag package.
+    maps      Utility functions to extract keys/values/both from maps.
     pp        Pretty Printer for go objects using text/tabwriter.
     slice     Generic functions and features for slices.
-    flagutil  Utility types for stdlib flag package
-    dbg       Easy debugging message utility
 
 License
 -------
