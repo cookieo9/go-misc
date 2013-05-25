@@ -1,4 +1,8 @@
-// Package PP provides a function which pretty-prints it's argument using reflection and text/tabwriter.
+// Pretty printing utility package.
+//
+// NOTE: The formatting of the pretty printer should not be
+// assumed to follow any known or fixed format, and could
+// be changed at any time.
 package pp
 
 import (
@@ -9,6 +13,7 @@ import (
 	"text/tabwriter"
 )
 
+// PP pretty-prints it's argument using reflection and text/tabwriter.
 func PP(x interface{}) string {
 	out := bytes.NewBuffer(nil)
 	tw := tabwriter.NewWriter(out, 4, 4, 1, ' ', 0)
@@ -52,6 +57,8 @@ func pp_struct(x interface{}, tabs string, w io.Writer) {
 	fmt.Fprint(w, tabs, ")")
 }
 
+// BUG(cookieo9) Slices are printed with 1 entry per line, which is
+// not very 'pretty' for []byte and the like.
 func pp_slice(x interface{}, tabs string, w io.Writer) {
 	v := reflect.Indirect(reflect.ValueOf(x))
 	if v.Len() == 0 {
