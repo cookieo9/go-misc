@@ -117,23 +117,21 @@ func seeker(cookie_ptr unsafe.Pointer, position *C.off64_t, whence C.int) C.int 
 	return 0
 }
 
-func wrapReadWriter(rw interface{}) (unsafe.Pointer, error) {
-	cookie := new_cookie(rw)
-
+func wrapReadWriter(cookie *cookie_t) (unsafe.Pointer, error) {
 	rdr := C.c_reader
 	wtr := C.c_writer
 	cls := C.c_closer
 	skr := C.c_seeker
 
-	if _, ok := rw.(io.Seeker); !ok {
+	if _, ok := cookie.val.(io.Seeker); !ok {
 		skr = nil
 	}
 
-	if _, ok := rw.(io.Reader); !ok {
+	if _, ok := cookie.val.(io.Reader); !ok {
 		rdr = nil
 	}
 
-	if _, ok := rw.(io.Writer); !ok {
+	if _, ok := cookie.val.(io.Writer); !ok {
 		wtr = nil
 	}
 
