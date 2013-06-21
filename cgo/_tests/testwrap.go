@@ -4,8 +4,10 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/cookieo9/go-misc/cgo"
 	"log"
+	"os"
 	"unsafe"
 )
 
@@ -16,7 +18,7 @@ func test_read() {
 	log.Println("test_read")
 	rdr := bytes.NewReader([]byte("Hello, World!"))
 
-	wrapped, err := cgo.WrapReader(rdr)
+	wrapped, err := cgo.WrapReader(rdr, false)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +45,7 @@ func test_write() {
 	log.Println("test_write")
 	var buf bytes.Buffer
 
-	wrap, err := cgo.WrapReadWriter(&buf)
+	wrap, err := cgo.WrapReadWriter(&buf, false)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,7 +63,32 @@ func test_write() {
 	log.Printf("received: %d %q", buf.Len(), string(buf.Bytes()))
 }
 
+func test_no_close() {
+	log.Println("test_no_close")
+	f, err := os.Create("foo.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	wrap, err := cgo.WrapWriter(f, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	wf := (*C.FILE)(wrap)
+
+	if x, err := C.fputs(C.CString("Foo!\n"), wf); x == C.EOF {
+		log.Fatal(err)
+	}
+	if x, err := C.fclose(wf); x == C.EOF {
+		log.Fatal(err)
+	}
+
+	fmt.Fprintln(f, "Bar!")
+}
+
 func main() {
 	test_read()
 	test_write()
+	test_no_close()
 }
