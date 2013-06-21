@@ -16,6 +16,7 @@ Documentation for all subpackages is available at http://www.godoc.org/github.co
 Subpackages
 -----------
     big128    Tools to preallocate 128-bit math/big.Ints
+    cgo       CGO utilities
     dbg       Easy debugging message utility.
     flagutil  Utility types for stdlib flag package.
     maps      Utility functions to extract keys/values/both from maps.
