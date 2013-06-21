@@ -1,4 +1,4 @@
-// +build darwin freebsd netbsd openbsd
+// +build darwin freebsd netbsd openbsd linux
 
 #include "_cgo_export.h"
 
