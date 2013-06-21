@@ -1,3 +1,5 @@
+// +build darwin freebsd netbsd openbsd
+
 #include "_cgo_export.h"
 
 typeof(c_reader) c_reader = (typeof(c_reader))reader;
