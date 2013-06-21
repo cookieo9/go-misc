@@ -3,7 +3,9 @@
 package cgo
 
 //
+// #define _GNU_SOURCE
 // #include <stdio.h>
+// #include <stdlib.h>
 // #include <sys/errno.h>
 // #include "indirect_linux.h"
 //
@@ -14,7 +16,6 @@ import "C"
 import (
 	"io"
 	"os"
-	"reflect"
 	"unsafe"
 )
 
@@ -32,7 +33,7 @@ func reader(cookie_ptr unsafe.Pointer, buf *C.char, size C.size_t) C.ssize_t {
 	n, err := rdr.Read(buffer)
 	if err != nil {
 		if err == io.EOF {
-			return C.int(n)
+			return C.ssize_t(n)
 		}
 		C.seterr(C.EIO)
 		return -1
@@ -55,7 +56,7 @@ func writer(cookie_ptr unsafe.Pointer, buf *C.char, size C.size_t) C.ssize_t {
 	n, err := rdr.Write(buffer)
 	if err != nil {
 		if err == io.EOF {
-			return C.int(n)
+			return C.ssize_t(n)
 		}
 		C.seterr(C.EIO)
 		return -1
@@ -83,7 +84,7 @@ func closer(cookie_ptr unsafe.Pointer) C.int {
 }
 
 //export seeker
-func seeker(cookie_ptr unsafe.Pointer, position C.off64_t, whence C.int) C.int {
+func seeker(cookie_ptr unsafe.Pointer, position *C.off64_t, whence C.int) C.int {
 	cookie := (*cookie_t)(cookie_ptr)
 
 	skr, ok := cookie.Seeker()
@@ -116,11 +117,11 @@ func seeker(cookie_ptr unsafe.Pointer, position C.off64_t, whence C.int) C.int {
 	return 0
 }
 
-func wrapReadWriter(rw io.Reader) (*C.FILE, error) {
+func wrapReadWriter(rw interface{}) (unsafe.Pointer, error) {
 	cookie := new_cookie(rw)
 
 	rdr := C.c_reader
-	wtr := C.c_reader
+	wtr := C.c_writer
 	cls := C.c_closer
 	skr := C.c_seeker
 
@@ -136,17 +137,24 @@ func wrapReadWriter(rw io.Reader) (*C.FILE, error) {
 		wtr = nil
 	}
 
-	fns := C.cookie_io_functions_t{
+	fns := C._IO_cookie_io_functions_t{
 		read:  rdr,
 		write: wtr,
 		seek:  skr,
 		close: cls,
 	}
-	mode := "rw"
+
+	mode := "w+"
+	if rdr == nil {
+		mode = "w"
+	}
+	if wtr == nil {
+		mode = "r"
+	}
 
 	cmode := C.CString(mode)
-	defer C.Free(unsafe.Pointer(cmode))
+	defer C.free(unsafe.Pointer(cmode))
 
 	f, err := C.fopencookie(unsafe.Pointer(cookie), cmode, fns)
-	return f, err
+	return unsafe.Pointer(f), err
 }
