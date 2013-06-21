@@ -5,19 +5,23 @@ import (
 	. "testing"
 )
 
-var insertTests = []struct {
+type insertTest struct {
 	Slice  interface{}
 	Index  int
 	Item   interface{}
 	Result interface{}
-}{
-	{[]int{}, 0, 1, []int{1}},
-	{[]int{}, 1, 1, nil},
-	{[]int{1, 2, 3}, 0, -99, []int{-99, 1, 2, 3}},
-	{[]int{1, 2, 3}, 1, 50, []int{1, 50, 2, 3}},
-	{[]int{1, 2, 3}, 3, 99, []int{1, 2, 3, 99}},
-	{[]int{1, 2, 3}, 2, "q", nil},
-	{5, 2, 1, nil},
+}
+
+func insertTests() []insertTest {
+	return []insertTest{
+		{[]int{}, 0, 1, []int{1}},
+		{[]int{}, 1, 1, nil},
+		{[]int{1, 2, 3}, 0, -99, []int{-99, 1, 2, 3}},
+		{[]int{1, 2, 3}, 1, 50, []int{1, 50, 2, 3}},
+		{[]int{1, 2, 3}, 3, 99, []int{1, 2, 3, 99}},
+		{[]int{1, 2, 3}, 2, "q", nil},
+		{5, 2, 1, nil},
+	}
 }
 
 type insertFunc func(interface{}, int, interface{}) interface{}
@@ -49,11 +53,11 @@ func runInsertTest(t *T, slice interface{}, index int, item interface{}, result 
 }
 
 func TestInsert(t *T) {
-	for _, test := range insertTests {
+	for _, test := range insertTests() {
 		runInsertTest(t, test.Slice, test.Index, test.Item, test.Result, Insert, "Insert")
 	}
 
-	for _, test := range insertTests {
+	for _, test := range insertTests() {
 		runInsertTest(t, test.Slice, test.Index, test.Item, test.Result, InsertCopy, "InsertCopy")
 	}
 }
@@ -90,31 +94,48 @@ type deleteTest struct {
 }
 
 var deleteTests = func() []deleteTest {
-	return []deleteTest{{[]int{1, 4, 2, 3, 4, 5}, 1, []int{1, 2, 3, 4, 5}}}
+	return []deleteTest{
+		{[]int{1, 4, 2, 3, 4, 5}, 1, []int{1, 2, 3, 4, 5}},
+		{[]int{}, 0, nil},
+		{[]int{42}, 0, []int{}},
+		{[]int{42}, 1, nil},
+		{"foo", 0, nil},
+	}
 }
 
-func TestDeleteCopy(t *T) {
-	for n, test := range deleteTests() {
-		initial, expected, index := test.InitialSlice, test.ExpectedResult, test.Element
+type deleteFunc func(interface{}, int) interface{}
 
-		t.Logf("%d: slice.DeleteCopy(%v, %d) => %v", n, initial, index, expected)
-		result := DeleteCopy(initial, index)
-
-		if !reflect.DeepEqual(result, expected) {
-			t.Errorf("%d: Expected %v got %v", n, expected, result)
+func runDeleteTest(t *T, slice interface{}, element int, expect interface{}, f func(interface{}, int) interface{}, name string) {
+	defer func() {
+		need_panic := expect == nil
+		if need_panic {
+			if msg := recover(); msg == nil {
+				t.Error("\tDid not get panic when expected")
+			} else {
+				t.Logf("\tRecieved panic when expected: %v", msg)
+			}
+		} else {
+			if msg := recover(); msg != nil {
+				t.Errorf("\tRecieved unexpected panic: %v", msg)
+			}
 		}
+	}()
+
+	t.Logf("Running test on %s(%v,%d) => expecting %v", name, slice, element, expect)
+	result := f(slice, element)
+	if !reflect.DeepEqual(expect, result) {
+		t.Error("\tUnexpected result: ", result)
+	} else {
+		t.Log("\tExpected result: ", result)
 	}
 }
 
 func TestDelete(t *T) {
-	for n, test := range deleteTests() {
-		initial, expected, index := test.InitialSlice, test.ExpectedResult, test.Element
+	for _, test := range deleteTests() {
+		runDeleteTest(t, test.InitialSlice, test.Element, test.ExpectedResult, Delete, "Delete")
+	}
 
-		t.Logf("%d: slice.Delete(%v,%d) => %v", n, initial, index, expected)
-		result := Delete(initial, index)
-
-		if !reflect.DeepEqual(result, expected) {
-			t.Errorf("%d: Expected %v got %v", n, expected, result)
-		}
+	for _, test := range deleteTests() {
+		runDeleteTest(t, test.InitialSlice, test.Element, test.ExpectedResult, DeleteCopy, "DeleteCopy")
 	}
 }
