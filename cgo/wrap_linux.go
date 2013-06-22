@@ -6,6 +6,7 @@ package cgo
 // #define _GNU_SOURCE
 // #include <stdio.h>
 // #include <stdlib.h>
+// #include <errno.h>
 // #include <sys/errno.h>
 // #include "indirect_linux.h"
 //
