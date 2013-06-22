@@ -4,6 +4,7 @@ package cgo
 
 //
 // #include <stdio.h>
+// #include <errno.h>
 // #include <sys/errno.h>
 // #include "indirect_bsd.h"
 //
