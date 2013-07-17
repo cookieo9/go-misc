@@ -12,7 +12,7 @@ import (
 // The flag generated has no default value (will be blank in usage).
 type BoolFunction func(bool)
 
-// Calles the wrapped function with either true or false when passed the
+// Set calls the wrapped function with either true or false when passed the
 // strings "true", "t", "1" (for true), or "false", "f", "0" (for false).
 // It is called only when the flag is mentioned on the command line.
 //
@@ -30,15 +30,15 @@ func (bf BoolFunction) Set(s string) error {
 	return nil
 }
 
-// Go 1.1 allows a flag.Value to implement this to have the flag treated
-// as a boolean flag. This means that it can be set via "-flag" in addition
-// to the existing "-flag=true" and "-flag=false" options. In go 1 this is not
-// supported, so you can only use the latter two options.
+// IsBoolFlag returns true to indicate to the Go 1.1+ version of the flag
+// package that this flag represents a boolean flag. This means that it can
+// be set via "-flag" in addition to the existing "-flag=true" and
+// "-flag=false" options.
 func (bf BoolFunction) IsBoolFlag() bool {
 	return true
 }
 
-// Returns "" at all times.
+// String returns "" at all times.
 func (bf BoolFunction) String() string {
 	return ""
 }
@@ -50,24 +50,24 @@ func (bf BoolFunction) String() string {
 // The flag generated has no default value (will be blank in usage).
 type StringFunction func(string) error
 
-// Calls the wrapped function and returns its error (if any).
+// Set calls the wrapped function and returns its error (if any).
 func (sf StringFunction) Set(s string) error {
 	return sf(s)
 }
 
-// Returns "" at all times.
+// String returns "" at all times.
 func (sf StringFunction) String() string {
 	return ""
 }
 
-// Creates a BoolFunction flag in the default command line FlagSet
-// maintained by the flag package.
+// BoolFunc creates a BoolFunction flag in the default command
+// line FlagSet maintained by the flag package.
 func BoolFunc(fn func(bool), name, usage string) {
 	flag.Var(BoolFunction(fn), name, usage)
 }
 
-// Creates a StringFunction flag in the default command line FlagSet
-// maintained by the flag package.
+// StringFunc creates a StringFunction flag in the default command
+// line FlagSet maintained by the flag package.
 func StringFunc(fn func(string) error, name, usage string) {
 	flag.Var(StringFunction(fn), name, usage)
 }
