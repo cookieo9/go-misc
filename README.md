@@ -1,12 +1,13 @@
 go-misc
 =======
-
 Utility packages for go. Go 1 Compatible. Go Gettable.
 
     go get github.com/cookieo9/go-misc/pp
     go get github.com/cookieo9/go-misc/slice
     etc...
 
+CI Status
+---------
 [![Travis-CI Build Status](https://travis-ci.org/cookieo9/go-misc.png?branch=master)](https://travis-ci.org/cookieo9/go-misc)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status?id=uucnbkjs37x5c2g1)](https://ci.appveyor.com/project/go-misc)
 
