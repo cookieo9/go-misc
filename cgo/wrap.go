@@ -1,4 +1,4 @@
-// Utility functions for CGO.
+// Package cgo provides utility functions for CGO.
 package cgo
 
 import (
@@ -6,21 +6,21 @@ import (
 	"unsafe"
 )
 
-// Identical to cgo.WrapReadWriter, except providing
+// WrapReader is identical to cgo.WrapReadWriter, except providing
 // read-only services.
-func WrapReader(r io.Reader, do_close bool) (unsafe.Pointer, error) {
-	return wrapReadWriter(new_cookie(r, do_close))
+func WrapReader(r io.Reader, doClose bool) (unsafe.Pointer, error) {
+	return wrapReadWriter(newCookie(r, doClose))
 }
 
-// Identical to cgo.WrapReadWriter, except providing
+// WrapWriter is identical to cgo.WrapReadWriter, except providing
 // write-only services.
-func WrapWriter(w io.Writer, do_close bool) (unsafe.Pointer, error) {
-	return wrapReadWriter(new_cookie(w, do_close))
+func WrapWriter(w io.Writer, doClose bool) (unsafe.Pointer, error) {
+	return wrapReadWriter(newCookie(w, doClose))
 }
 
-// Wraps an io.ReadWriter into a libc *FILE. If the reader
-// supports the io.Seeker, or io.Closer interfaces, then
-// the extra functionality will be provided through the
+// WrapReadWriter wraps an io.ReadWriter into a libc *FILE.
+// If the reader supports the io.Seeker, or io.Closer interfaces,
+// then the extra functionality will be provided through the
 // generated *FILE pointer
 //
 // Even if the reader doesn't implement a Close()
@@ -37,6 +37,6 @@ func WrapWriter(w io.Writer, do_close bool) (unsafe.Pointer, error) {
 // *C.FILE in this package would require a user of this
 // package to convert it from a "*cgo.C.FILE" to a
 // "mypkg.C.FILE" with an unsafe.Pointer as a stepping stone.
-func WrapReadWriter(rw io.ReadWriter, do_close bool) (unsafe.Pointer, error) {
-	return wrapReadWriter(new_cookie(rw, do_close))
+func WrapReadWriter(rw io.ReadWriter, doClose bool) (unsafe.Pointer, error) {
+	return wrapReadWriter(newCookie(rw, doClose))
 }

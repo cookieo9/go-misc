@@ -19,8 +19,8 @@ import (
 )
 
 //export reader
-func reader(cookie_ptr unsafe.Pointer, buf *C.char, size C.int) C.int {
-	cookie := (*cookie_t)(cookie_ptr)
+func reader(cookiePtr unsafe.Pointer, buf *C.char, size C.int) C.int {
+	cookie := (*cookie)(cookiePtr)
 
 	rdr, ok := cookie.Reader()
 	if !ok {
@@ -28,7 +28,7 @@ func reader(cookie_ptr unsafe.Pointer, buf *C.char, size C.int) C.int {
 		return -1
 	}
 
-	buffer := make_slice(buf, int(size))
+	buffer := makeSlice(buf, int(size))
 	n, err := rdr.Read(buffer)
 	if err != nil {
 		if err == io.EOF {
@@ -42,8 +42,8 @@ func reader(cookie_ptr unsafe.Pointer, buf *C.char, size C.int) C.int {
 }
 
 //export writer
-func writer(cookie_ptr unsafe.Pointer, buf *C.char, size C.int) C.int {
-	cookie := (*cookie_t)(cookie_ptr)
+func writer(cookiePtr unsafe.Pointer, buf *C.char, size C.int) C.int {
+	cookie := (*cookie)(cookiePtr)
 
 	wtr, ok := cookie.Writer()
 	if !ok {
@@ -51,7 +51,7 @@ func writer(cookie_ptr unsafe.Pointer, buf *C.char, size C.int) C.int {
 		return -1
 	}
 
-	buffer := make_slice(buf, int(size))
+	buffer := makeSlice(buf, int(size))
 	n, err := wtr.Write(buffer)
 	if err != nil {
 		C.seterr(C.EIO)
@@ -62,9 +62,9 @@ func writer(cookie_ptr unsafe.Pointer, buf *C.char, size C.int) C.int {
 }
 
 //export closer
-func closer(cookie_ptr unsafe.Pointer) C.int {
-	cookie := (*cookie_t)(cookie_ptr)
-	defer free_cookie(cookie)
+func closer(cookiePtr unsafe.Pointer) C.int {
+	cookie := (*cookie)(cookiePtr)
+	defer freeCookie(cookie)
 
 	cls, ok := cookie.Closer()
 	if !ok {
@@ -80,8 +80,8 @@ func closer(cookie_ptr unsafe.Pointer) C.int {
 }
 
 //export seeker
-func seeker(cookie_ptr unsafe.Pointer, position C.fpos_t, whence C.int) C.fpos_t {
-	cookie := (*cookie_t)(cookie_ptr)
+func seeker(cookiePtr unsafe.Pointer, position C.fpos_t, whence C.int) C.fpos_t {
+	cookie := (*cookie)(cookiePtr)
 
 	skr, ok := cookie.Seeker()
 	if !ok {
@@ -111,7 +111,7 @@ func seeker(cookie_ptr unsafe.Pointer, position C.fpos_t, whence C.int) C.fpos_t
 	return C.fpos_t(ret)
 }
 
-func wrapReadWriter(cookie *cookie_t) (unsafe.Pointer, error) {
+func wrapReadWriter(cookie *cookie) (unsafe.Pointer, error) {
 	rdr := C.c_reader
 	wtr := C.c_writer
 	cls := C.c_closer

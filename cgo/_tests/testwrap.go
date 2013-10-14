@@ -14,7 +14,7 @@ import (
 // #include <stdio.h>
 import "C"
 
-func test_read() {
+func testRead() {
 	log.Println("test_read")
 	rdr := bytes.NewReader([]byte("Hello, World!"))
 
@@ -41,7 +41,7 @@ func test_read() {
 	}
 }
 
-func test_write() {
+func testWrite() {
 	log.Println("test_write")
 	var buf bytes.Buffer
 
@@ -63,7 +63,7 @@ func test_write() {
 	log.Printf("received: %d %q", buf.Len(), string(buf.Bytes()))
 }
 
-func test_no_close() {
+func testNoClose() {
 	log.Println("test_no_close")
 	f, err := os.Create("foo.txt")
 	if err != nil {
@@ -88,7 +88,7 @@ func test_no_close() {
 }
 
 func main() {
-	test_read()
-	test_write()
-	test_no_close()
+	testRead()
+	testWrite()
+	testNoClose()
 }
