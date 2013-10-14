@@ -1,16 +1,16 @@
 package dbg
 
-// Equivalent to Default.Println
+// Println is equivalent to Default.Println
 func Println(v ...interface{}) {
 	Default.Println(v...)
 }
 
-// Equivalent to Default.Printf
+// Printf is equivalent to Default.Printf
 func Printf(format string, v ...interface{}) {
 	Default.Printf(format, v...)
 }
 
-// Equivalent to Default.Print
+// Print is equivalent to Default.Print
 func Print(v ...interface{}) {
 	Default.Print(v...)
 }
