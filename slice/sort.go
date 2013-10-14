@@ -61,7 +61,7 @@ func (t typed) Less(i, j int) bool {
 	return t.f.Call(args)[0].Bool()
 }
 
-// A slice that additionally supports slice.Interface can be trivially wrapped
+// An Interface is a slice can be trivially wrapped
 // by the routines in this package and thus be used as a sort.Interface, and
 // possibly a heap.Interface
 type Interface interface {

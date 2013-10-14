@@ -58,7 +58,7 @@ func TestSortUntyped(t *testing.T) {
 
 func checkSlice(given, expected interface{}) error {
 	if !reflect.DeepEqual(given, expected) {
-		return fmt.Errorf("Expected %v got %v", expected, given)
+		return fmt.Errorf("expected %v got %v", expected, given)
 	}
 	return nil
 }

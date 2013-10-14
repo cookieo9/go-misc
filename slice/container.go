@@ -6,19 +6,19 @@ import (
 	"reflect"
 )
 
-func check_insert(slice interface{}, index int, item interface{}) (slice_val, item_val reflect.Value) {
-	slice_val = reflect.ValueOf(slice)
-	if slice_val.Kind() != reflect.Slice {
+func checkInsert(slice interface{}, index int, item interface{}) (sliceVal, itemVal reflect.Value) {
+	sliceVal = reflect.ValueOf(slice)
+	if sliceVal.Kind() != reflect.Slice {
 		panic(errors.New("insert: argument 1 must be slice"))
 	}
 
-	item_val = reflect.ValueOf(item)
-	if item_val.Type() != slice_val.Type().Elem() {
+	itemVal = reflect.ValueOf(item)
+	if itemVal.Type() != sliceVal.Type().Elem() {
 		panic(fmt.Errorf("insert: %T can't be inserted into %T", item, slice))
 	}
 
-	if index < 0 || index > slice_val.Len() {
-		panic(fmt.Errorf("insert: index (%d) out of range (0..%d)", index, slice_val.Len()))
+	if index < 0 || index > sliceVal.Len() {
+		panic(fmt.Errorf("insert: index (%d) out of range (0..%d)", index, sliceVal.Len()))
 	}
 
 	return
@@ -46,21 +46,21 @@ func check_insert(slice interface{}, index int, item interface{}) (slice_val, it
 // slice) may have their contents altered, if the change is made in place. To
 // guarantee that a new array will always be created use the InsertCopy function.
 func Insert(slice interface{}, index int, item interface{}) interface{} {
-	slice_val, item_val := check_insert(slice, index, item)
+	sliceVal, itemVal := checkInsert(slice, index, item)
 
-	if index == slice_val.Len() {
-		return reflect.Append(slice_val, item_val).Interface()
+	if index == sliceVal.Len() {
+		return reflect.Append(sliceVal, itemVal).Interface()
 	}
 
-	begin := slice_val.Slice(0, index+1)
-	end := slice_val.Slice(index, slice_val.Len())
+	begin := sliceVal.Slice(0, index+1)
+	end := sliceVal.Slice(index, sliceVal.Len())
 
 	out := reflect.AppendSlice(begin, end)
-	out.Index(index).Set(item_val)
+	out.Index(index).Set(itemVal)
 	return out.Interface()
 }
 
-// Insert adds an element to a slice at a given index. Always allocates
+// InsertCopy adds an element to a slice at a given index. Always allocates
 // a new slice, and never modifies the original memory.
 //
 // The returned slice will be the same type as the given slice, but
@@ -76,28 +76,28 @@ func Insert(slice interface{}, index int, item interface{}) interface{} {
 // 	begin, end := slice[:idx], slice[idx:]
 // 	slice = append(append(append(make([]T,0,len(slice)+1), begin...),item),end...)
 func InsertCopy(slice interface{}, index int, item interface{}) interface{} {
-	slice_val, item_val := check_insert(slice, index, item)
-	begin := slice_val.Slice(0, index)
-	end := slice_val.Slice(index, slice_val.Len())
+	sliceVal, itemVal := checkInsert(slice, index, item)
+	begin := sliceVal.Slice(0, index)
+	end := sliceVal.Slice(index, sliceVal.Len())
 
-	out := reflect.MakeSlice(slice_val.Type(), 0, slice_val.Len()+1)
-	out = reflect.AppendSlice(reflect.Append(reflect.AppendSlice(out, begin), item_val), end)
+	out := reflect.MakeSlice(sliceVal.Type(), 0, sliceVal.Len()+1)
+	out = reflect.AppendSlice(reflect.Append(reflect.AppendSlice(out, begin), itemVal), end)
 	return out.Interface()
 }
 
-func check_delete(slice interface{}, index int) (slice_val reflect.Value) {
-	slice_val = reflect.ValueOf(slice)
-	if slice_val.Kind() != reflect.Slice {
+func checkDelete(slice interface{}, index int) (sliceVal reflect.Value) {
+	sliceVal = reflect.ValueOf(slice)
+	if sliceVal.Kind() != reflect.Slice {
 		panic(errors.New("delete: argument 1 must be slice"))
 	}
 
-	if index < 0 || index > slice_val.Len()-1 {
-		panic(fmt.Errorf("delete: idx (%d) out of range (0..%d)", index, slice_val.Len()-1))
+	if index < 0 || index > sliceVal.Len()-1 {
+		panic(fmt.Errorf("delete: idx (%d) out of range (0..%d)", index, sliceVal.Len()-1))
 	}
 	return
 }
 
-// Deletes the element of the slice at a given index.
+// Delete removes the element of the slice at a given index.
 // The returned slice is a reference to the modified original array.
 //
 // The returned slice will be the same type as the given slice, but
@@ -115,13 +115,13 @@ func check_delete(slice interface{}, index int) (slice_val reflect.Value) {
 // referencing the original underlying array may have their contents
 // altered by this call. This behaviour is consistent with append().
 func Delete(slice interface{}, index int) interface{} {
-	slice_val := check_delete(slice, index)
-	begin := slice_val.Slice(0, index)
-	end := slice_val.Slice(index+1, slice_val.Len())
+	sliceVal := checkDelete(slice, index)
+	begin := sliceVal.Slice(0, index)
+	end := sliceVal.Slice(index+1, sliceVal.Len())
 	return reflect.AppendSlice(begin, end).Interface()
 }
 
-// Deletes the element of the slice at a given index.
+// DeleteCopy removes the element of the slice at a given index.
 // The returned slice references a new array, the original
 // array and all referencing slices are un-altered.
 //
@@ -136,9 +136,9 @@ func Delete(slice interface{}, index int) interface{} {
 // Equivalent to:
 //	slice = append(append(make([]T,0,len(slice)-1),slice[:idx]...),slice[idx+1]...)
 func DeleteCopy(slice interface{}, index int) interface{} {
-	slice_val := check_delete(slice, index)
-	begin := slice_val.Slice(0, index)
-	end := slice_val.Slice(index+1, slice_val.Len())
-	tmp := reflect.MakeSlice(slice_val.Type(), 0, slice_val.Len()-1)
+	sliceVal := checkDelete(slice, index)
+	begin := sliceVal.Slice(0, index)
+	end := sliceVal.Slice(index+1, sliceVal.Len())
+	tmp := reflect.MakeSlice(sliceVal.Type(), 0, sliceVal.Len()-1)
 	return reflect.AppendSlice(reflect.AppendSlice(tmp, begin), end).Interface()
 }

@@ -4,7 +4,8 @@ import (
 	"reflect"
 )
 
-// Reverse() reverses the items of the given slice (or array).
+// Reverse reverses the order of the items
+// of the given slice (or array).
 // Will panic if not passed a slice or array.
 func Reverse(slice interface{}) {
 	v := reflect.ValueOf(slice)

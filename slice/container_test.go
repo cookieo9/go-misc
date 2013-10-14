@@ -28,8 +28,8 @@ type insertFunc func(interface{}, int, interface{}) interface{}
 
 func runInsertTest(t *T, slice interface{}, index int, item interface{}, result interface{}, f insertFunc, name string) {
 	defer func() {
-		need_panic := result == nil
-		if need_panic {
+		needPanic := result == nil
+		if needPanic {
 			if err := recover(); err == nil {
 				t.Error("\tDid not get expected panic")
 			} else {
@@ -107,8 +107,8 @@ type deleteFunc func(interface{}, int) interface{}
 
 func runDeleteTest(t *T, slice interface{}, element int, expect interface{}, f func(interface{}, int) interface{}, name string) {
 	defer func() {
-		need_panic := expect == nil
-		if need_panic {
+		needPanic := expect == nil
+		if needPanic {
 			if msg := recover(); msg == nil {
 				t.Error("\tDid not get panic when expected")
 			} else {
