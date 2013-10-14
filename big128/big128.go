@@ -1,4 +1,4 @@
-// The big128 package provides a small set of preallocation tools for the go standard library
+// Package big128 provides a small set of preallocation tools for the go standard library
 // math/big package. These tools allow the user to generate *big.Int, []big.Int, and []*big.Int values
 // with 128-bits of preallocated storage using a small number of memory allocations.
 //
@@ -26,7 +26,7 @@ const (
 	pS = bits / _W // preallocated array size in Words
 )
 
-// PreallocInt() preallocates 128-bits of storage for an existing
+// PreallocInt preallocates 128-bits of storage for an existing
 // big.Int value. Will not perform the pre-allocation if the given
 // pointer is nil, or if the storage has already been allocated.
 //
@@ -39,7 +39,7 @@ func PreallocInt(i *big.Int) {
 	}
 }
 
-// NewInt() returns a new *big.Int, with preallocated
+// NewInt returns a new *big.Int, with preallocated
 // storage for 128 bits worth of data and set initially
 // to the value of x. It is meant to be a drop-in replacement
 // for math/big.NewInt(x), which only allocates memory once.
@@ -52,7 +52,7 @@ func NewInt(x int64) *big.Int {
 	return y.bigint.SetBits(y.prealloc[0:0]).SetInt64(x)
 }
 
-// PreallocInts() preallocates the storage of all the
+// PreallocInts preallocates the storage of all the
 // big.Ints in the given slice to contain 128 bits. This
 // operation only allocates memory once.
 //
@@ -65,7 +65,7 @@ func PreallocInts(ints []big.Int) {
 	}
 }
 
-// NewInts() generates a slice of big.Int values where each
+// NewInts generates a slice of big.Int values where each
 // has a 128 bit storage preallocated. This operation only
 // allocates memory twice.
 func NewInts(n int) []big.Int {
@@ -74,7 +74,7 @@ func NewInts(n int) []big.Int {
 	return ints
 }
 
-// NewIntPtrs() generates a slice of *big.Int value where each
+// NewIntPtrs generates a slice of *big.Int value where each
 // is initialized and has a preallocation of 128 bits for its
 // data storage. This operation only allocates memory three times.
 func NewIntPtrs(n int) []*big.Int {
