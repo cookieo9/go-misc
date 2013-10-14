@@ -1,4 +1,4 @@
-// Pretty printing utility package.
+// Package pp provides pretty printing services.
 //
 // NOTE: The formatting of the pretty printer should not be
 // assumed to follow any known or fixed format, and could
@@ -31,11 +31,11 @@ func pp(x interface{}, tabs string, w io.Writer) {
 	v := reflect.Indirect(reflect.ValueOf(x))
 	switch v.Kind() {
 	case reflect.Struct:
-		pp_struct(x, tabs, w)
+		ppStruct(x, tabs, w)
 	case reflect.Array, reflect.Slice:
-		pp_slice(x, tabs, w)
+		ppSlice(x, tabs, w)
 	case reflect.Map:
-		pp_map(x, tabs, w)
+		ppMap(x, tabs, w)
 	case reflect.String:
 		fmt.Fprintf(w, "%q", x)
 	default:
@@ -43,7 +43,7 @@ func pp(x interface{}, tabs string, w io.Writer) {
 	}
 }
 
-func pp_struct(x interface{}, tabs string, w io.Writer) {
+func ppStruct(x interface{}, tabs string, w io.Writer) {
 	fmt.Fprintf(w, "%T (\n", x)
 	v := reflect.Indirect(reflect.ValueOf(x))
 	t := v.Type()
@@ -59,7 +59,7 @@ func pp_struct(x interface{}, tabs string, w io.Writer) {
 
 // BUG(cookieo9) Slices are printed with 1 entry per line, which is
 // not very 'pretty' for []byte and the like.
-func pp_slice(x interface{}, tabs string, w io.Writer) {
+func ppSlice(x interface{}, tabs string, w io.Writer) {
 	v := reflect.Indirect(reflect.ValueOf(x))
 	if v.Len() == 0 {
 		fmt.Fprint(w, "[]")
@@ -75,7 +75,7 @@ func pp_slice(x interface{}, tabs string, w io.Writer) {
 	fmt.Fprint(w, tabs, "]")
 }
 
-func pp_map(x interface{}, tabs string, w io.Writer) {
+func ppMap(x interface{}, tabs string, w io.Writer) {
 	fmt.Fprintf(w, "{\n")
 	v := reflect.Indirect(reflect.ValueOf(x))
 	for _, k := range v.MapKeys() {
