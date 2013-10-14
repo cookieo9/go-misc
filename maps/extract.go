@@ -1,9 +1,9 @@
-// Utility functions to extract keys, values, or both from maps.
+// Package maps provides functions to extract keys, values, or both from maps.
 package maps
 
 import "reflect"
 
-// Pulls the keys out of a map into a slice of the
+// GetKeys pulls the keys out of a map into a slice of the
 // appropriate type.
 func GetKeys(mapval, sliceptr interface{}) {
 	mv := reflect.ValueOf(mapval)
@@ -14,7 +14,7 @@ func GetKeys(mapval, sliceptr interface{}) {
 	}
 }
 
-// Pulls the values out of a map into a slice of the
+// GetVals pulls the values out of a map into a slice of the
 // appropriate type.
 func GetVals(mapval, sliceptr interface{}) {
 	mv := reflect.ValueOf(mapval)
@@ -25,7 +25,7 @@ func GetVals(mapval, sliceptr interface{}) {
 	}
 }
 
-// Pull the key/value pairs out of a map into a slice
+// GetPairs pulls the key/value pairs out of a map into a slice
 // of the type struct { Key <KeyType>; Val <ValType> }.
 func GetPairs(mapval, sliceptr interface{}) {
 	mv := reflect.ValueOf(mapval)
