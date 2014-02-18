@@ -1,12 +1,12 @@
 clone_folder: c:\projects\go\src\github.com\cookieo9\go-misc
 
 environment:
-        GOPATH: c:\projects\go
+  GOPATH: c:\projects\go
 
 platform:
-        - x86
-        - x64
+  - x86
+  - x64
 
 build_script:
-        - go get -v -d -t github.com\cookieo9\go-misc\...
-        - go test -v github.com\cookieo9\go-misc\...
+  - go get -v -d -t github.com\cookieo9\go-misc\...
+  - go test -v github.com\cookieo9\go-misc\...
