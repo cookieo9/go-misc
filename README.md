@@ -9,7 +9,7 @@ Utility packages for go. Go 1 Compatible. Go Gettable.
 CI Status
 ---------
 [![Travis-CI Build Status](https://travis-ci.org/cookieo9/go-misc.png?branch=master)](https://travis-ci.org/cookieo9/go-misc)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status?id=uucnbkjs37x5c2g1)](https://ci.appveyor.com/project/go-misc)
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status?id=lx4lxbtc34plp921)](https://ci.appveyor.com/project/go-misc)
 
 Documentation
 -------------
