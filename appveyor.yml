@@ -1,7 +1,3 @@
-clone_folder: c:\projects\go\src\github.com\cookieo9\go-misc
-
-environment:
-  GOPATH: c:\projects\go
 
 build_script:
   - go build -v ./big128 ./dbg ./flagutil ./maps ./pp ./slice
