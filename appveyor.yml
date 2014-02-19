@@ -1,6 +1,1 @@
-
-build_script:
-  - go build -v ./big128 ./dbg ./flagutil ./maps ./pp ./slice
-  
-test_script:
-  - go test -v ./big128 ./dbg ./flagutil ./maps ./pp ./slice
+clone_folder: c:\projects\go\src\github.com\cookieo9\go-misc
