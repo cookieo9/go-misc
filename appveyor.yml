@@ -3,10 +3,8 @@ clone_folder: c:\projects\go\src\github.com\cookieo9\go-misc
 environment:
   GOPATH: c:\projects\go
 
-platform:
-  - x86
-  - x64
-
 build_script:
-  - go get -v -d -t github.com\cookieo9\go-misc\...
-  - go test -v github.com\cookieo9\go-misc\...
+  - go build -v ./big128 ./dbg ./flagutil ./maps ./pp ./slice
+  
+test_script:
+  - go test -v ./big128 ./dbg ./flagutil ./maps ./pp ./slice
