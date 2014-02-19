@@ -1,12 +1,7 @@
-
 clone_folder: c:\projects\go\src\github.com\cookieo9\go-misc
 
 environment:
   GOPATH: c:\projects\go
-
-platform: 
-  - x86
-  - x64
 
 build_script:
   - go build -v ./slice
