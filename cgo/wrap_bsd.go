@@ -1,4 +1,5 @@
 // +build darwin freebsd netbsd openbsd
+// +build cgo
 
 package cgo
 

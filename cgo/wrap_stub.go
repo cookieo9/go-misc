@@ -1,4 +1,4 @@
-// +build !darwin,!freebsd,!openbsd,!netbsd,!linux
+// +build !darwin,!freebsd,!openbsd,!netbsd,!linux !cgo
 
 package cgo
 

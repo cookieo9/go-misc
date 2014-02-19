@@ -1,3 +1,5 @@
+// +build cgo
+
 // Package cgo provides utility functions for CGO.
 package cgo
 
