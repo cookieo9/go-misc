@@ -1,10 +1,10 @@
-clone_folder: "c:\\projects\\go\\src\\github.com\\cookieo9\\go-misc"
+clone_folder: c:/projects/go/src/github.com/cookieo9/go-misc
 
 environment:
-  GOPATH: "c:\\projects\\go"
+  GOPATH: c:/projects/go
 
 build_script:
-  - "go build -v ./slice"
+  - go build -v ./slice
 
 test_script:
-  - "go test -v ./slice"
+  - go test -v ./slice
