@@ -1,8 +1,8 @@
-
 clone_folder: c:\gopath\src\github.com\cookieo9\go-misc
 
 environment:
   GOPATH: c:\gopath
+  CGO_ENABLED: 0
   
 build_script:
   - cd %GOPATH%\src\github.com\cookieo9\go-misc
