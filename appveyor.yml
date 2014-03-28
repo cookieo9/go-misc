@@ -1,0 +1,13 @@
+
+clone_folder: c:\gopath\src\github.com\cookieo9\go-misc
+
+environment:
+  GOPATH: c:\gopath
+  
+build_script:
+  - cd %GOPATH%\src\github.com\cookieo9\go-misc
+  - go install -v ./...
+  
+test_script:
+  - cd %GOPATH%\src\github.com\cookieo9\go-misc
+  - go test -v ./...
