@@ -5,9 +5,7 @@ environment:
   CGO_ENABLED: 0
   
 build_script:
-  # - cd %GOPATH%\src\github.com\cookieo9\go-misc
   - go install -v ./...
   
 test_script:
-  # - cd %GOPATH%\src\github.com\cookieo9\go-misc
-  - go test -v ./...
+  - go test ./...
