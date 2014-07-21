@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
-func newPublisher(x interface{}, tb testing.TB) *Publisher {
+func newPublisher(x interface{}, t *testing.T) *Publisher {
 	p, err := NewPublisher(x)
 	if err != nil {
-		tb.Fatalf("NewPublisher(%#v): %v", x, err)
+		t.Fatalf("NewPublisher(%#v): %v", x, err)
 	}
 	return p
 }
