@@ -1,3 +1,5 @@
+// +build go1.1
+
 package chans_test
 
 import (
