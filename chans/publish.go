@@ -18,6 +18,8 @@ var (
 	errSubNone  = errors.New("not subscribed")
 )
 
+// A Publisher maintains a publish/subscribe relationship between
+// an input channel, and a set of output channels.
 type Publisher struct {
 	input reflect.Value
 	subs  chan sub
@@ -31,6 +33,11 @@ type sub struct {
 	err   chan error
 }
 
+// NewPublisher creates a new Publisher that reads messages from
+// the given channel.
+//
+// Will return an error if the ch argument is not a channel or
+// cannot be received from.
 func NewPublisher(ch interface{}) (*Publisher, error) {
 	pub := new(Publisher)
 
@@ -45,14 +52,9 @@ func NewPublisher(ch interface{}) (*Publisher, error) {
 }
 
 func (p *Publisher) init(ch interface{}) error {
-	vch := reflect.ValueOf(ch)
-
-	if vch.Kind() != reflect.Chan { // Not a channel
-		return errNotChan
-	}
-
-	if vch.Type().ChanDir()&reflect.RecvDir == 0 { // Can't Receive
-		return errNotRecv
+	vch, err := p.checkChannel(ch, true)
+	if err != nil {
+		return err
 	}
 
 	p.input = vch
@@ -61,6 +63,11 @@ func (p *Publisher) init(ch interface{}) error {
 	return nil
 }
 
+// Unsubscribe stops the given channel from recieving messages
+// sent through the Publisher.
+//
+// Returns an error if the channel was never subscribed to the
+// Publisher.
 func (p *Publisher) Unsubscribe(ch interface{}) error {
 	p.lock.Lock()
 	defer p.lock.Unlock()
@@ -80,6 +87,13 @@ func (p *Publisher) Unsubscribe(ch interface{}) error {
 	return <-ech
 }
 
+// Subscribe adds the given channel to the Publisher's list of subscribers
+// and will begin to receive messages sent to the Publisher's input channel.
+//
+// Returns an error if ch:
+//  - is not a channel
+//  - cannot be sent to
+//  - has a different element type than the input channel
 func (p *Publisher) Subscribe(ch interface{}) error {
 	p.lock.Lock()
 	defer p.lock.Unlock()
@@ -96,6 +110,32 @@ func (p *Publisher) Subscribe(ch interface{}) error {
 		err: ech,
 	}
 	return <-ech
+}
+
+func (p *Publisher) checkChannel(ch interface{}, input bool) (reflect.Value, error) {
+	vch := reflect.ValueOf(ch)
+	vnil := reflect.ValueOf(nil)
+
+	if vch.Kind() != reflect.Chan {
+		return vnil, errNotChan
+	}
+
+	if input {
+		if vch.Type().ChanDir()&reflect.RecvDir == 0 {
+			return vnil, errNotRecv
+		}
+		return vch, nil
+	}
+
+	if vch.Type().ChanDir()&reflect.SendDir == 0 {
+		return vnil, errNotSend
+	}
+
+	if !p.input.Type().Elem().AssignableTo(vch.Type().Elem()) {
+		return vnil, errBadType
+	}
+
+	return vch, nil
 }
 
 func (p *Publisher) main() {
@@ -146,22 +186,6 @@ func (p *Publisher) main() {
 		case 1: // New subscriber
 			subscription := val.Interface().(sub)
 			ch := subscription.ch
-			vch := reflect.ValueOf(ch)
-
-			if vch.Kind() != reflect.Chan { // Not a channel
-				subscription.err <- errNotChan
-				break
-			}
-
-			if vch.Type().ChanDir()&reflect.SendDir == 0 { // Can't send
-				subscription.err <- errNotSend
-				break
-			}
-
-			if !p.input.Type().Elem().AssignableTo(vch.Type().Elem()) { // Bad channel type
-				subscription.err <- errBadType
-				break
-			}
 
 			if subscription.unsub { // Removing a subscription
 				if !subscriberSet[ch] { // No match
@@ -181,6 +205,12 @@ func (p *Publisher) main() {
 					}
 				}
 			} else {
+				vch, err := p.checkChannel(ch, false)
+				if err != nil { // bad channel
+					subscription.err <- err
+					break
+				}
+
 				if subscriberSet[ch] { // Already exists
 					subscription.err <- errSubExist
 					break
