@@ -17,6 +17,7 @@ Documentation for all subpackages is available at http://www.godoc.org/github.co
 
 Subpackages
 -----------
+    avg       Types to compute running averages
     big128    Tools to preallocate 128-bit math/big.Ints
     chans     Channel utilities
     dbg       Easy debugging message utility.
