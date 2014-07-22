@@ -94,6 +94,7 @@ func (p *Publisher) Unsubscribe(ch interface{}) error {
 //  - is not a channel
 //  - cannot be sent to
 //  - has a different element type than the input channel
+//  - is already subscribed to the Publisher
 func (p *Publisher) Subscribe(ch interface{}) error {
 	p.lock.Lock()
 	defer p.lock.Unlock()
