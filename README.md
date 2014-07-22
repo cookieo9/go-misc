@@ -1,6 +1,7 @@
 go-misc
 =======
 Utility packages for go. Go 1 Compatible. Go Gettable.
+[![GoDoc](https://godoc.org/github.com/cookieo9/go-misc?status.svg)](https://godoc.org/github.com/cookieo9/go-misc)
 
     go get github.com/cookieo9/go-misc/pp
     go get github.com/cookieo9/go-misc/slice
@@ -14,6 +15,7 @@ CI Status
 Documentation
 -------------
 Documentation for all subpackages is available at http://www.godoc.org/github.com/cookieo9/go-misc
+
 
 Subpackages
 -----------
