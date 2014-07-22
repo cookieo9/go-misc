@@ -1,3 +1,4 @@
+// Package avg provides types for computing running averages.
 package avg
 
 // The Averager interface describe a type which maintains
